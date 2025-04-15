@@ -110,8 +110,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E1E1E), // VS Code AppBar color
         title: const Text(
-          'My App',
-          style: TextStyle(color: Colors.white),
+          'All in One',
+          style: TextStyle(color: Colors.lightGreen),
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -128,7 +128,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
               hintStyle: const TextStyle(color: Colors.grey),
               prefixIcon: const Icon(Icons.search, color: Colors.white),
               filled: true,
-              fillColor: const Color(0xFF2D2D2D),
+              fillColor: const Color(0xFF330066), // Updated to the requested purple color
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide.none,
