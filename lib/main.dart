@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-final tapCountProvider = StateProvider<int>((ref) => 0);
-
 void main() {
-  runApp(const ProviderScope(child: MyAppList()));
+  runApp(const MyAppList());
 }
 
 class MyAppList extends StatelessWidget {
@@ -15,9 +12,10 @@ class MyAppList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // Removed debug banner
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF7093FF), // VS Code bg
+        scaffoldBackgroundColor: const Color(0xFF7093FF),
         cardColor: const Color(0xFFFFFFFF),
         iconTheme: const IconThemeData(color: Colors.white),
         textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
@@ -27,14 +25,14 @@ class MyAppList extends StatelessWidget {
   }
 }
 
-class MyHomePage extends ConsumerStatefulWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  ConsumerState<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends ConsumerState<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
 
   List<_AppItem> _items = [];
@@ -48,15 +46,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       _AppItem(FontAwesomeIcons.tiktok, 'Tiktok', () {
         _launchURL('https://www.tiktok.com/');
       }),
-
       _AppItem(FontAwesomeIcons.snapchat, 'Snapchat', () {
         _launchURL('https://www.snapchat.com/');
       }),
       _AppItem(FontAwesomeIcons.images, 'Album', () {
         _launchURL('https://photos.google.com');
-
       }),
-
       _AppItem(FontAwesomeIcons.message, 'Chatgpt', () {
         _launchURL('https://chatgpt.com/');
       }),
@@ -69,8 +64,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       _AppItem(FontAwesomeIcons.facebook, 'Facebook', () {
         _launchURL('https://www.facebook.com');
       }),
-      _AppItem(FontAwesomeIcons.motorcycle , 'Pathao ', () {
-        _launchURL('https://pathao.com/np/');  // URL for motobike
+      _AppItem(FontAwesomeIcons.motorcycle, 'Pathao ', () {
+        _launchURL('https://pathao.com/np/');
       }),
       _AppItem(FontAwesomeIcons.map, 'Map', () {
         _launchURL('https://www.google.com/maps/search/?api=1&query=New+York');
@@ -79,7 +74,6 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         _launchURL('https://www.google.com/');
       }),
     ];
-
 
     _filteredItems = _items;
 
@@ -102,7 +96,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   Widget buildCenteredCard(_AppItem item) {
     return Card(
-      color: const Color(0XFFF5722), // Updated card color
+      color: const Color(0xFFF5722),
       child: InkWell(
         onTap: item.onTap,
         child: SizedBox(
@@ -124,11 +118,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final tapCount = ref.watch(tapCountProvider);
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E), // VS Code AppBar color
+        backgroundColor: const Color(0xFF1E1E1E),
         title: const Text(
           'All in One',
           style: TextStyle(color: Colors.redAccent),
@@ -136,34 +128,37 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(8.0),
-        children: <Widget>[
+      body: Column(
+        children: [
           const SizedBox(height: 10),
-          TextField(
-            controller: _searchController,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              hintStyle: const TextStyle(color: Colors.grey),
-              prefixIcon: const Icon(Icons.search, color: Colors.white),
-              filled: true,
-              fillColor: const Color(0xFF330066), // Purple search bar
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                hintStyle: const TextStyle(color: Colors.grey),
+                prefixIcon: const Icon(Icons.search, color: Colors.white),
+                filled: true,
+                fillColor: const Color(0xFF330066),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 20),
-          Center(
-            child: Text(
-              'You tapped: $tapCount times',
-              style: const TextStyle(color: Colors.white),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              itemCount: _filteredItems.length,
+              itemBuilder: (context, index) {
+                return buildCenteredCard(_filteredItems[index]);
+              },
             ),
           ),
-          const SizedBox(height: 10),
-          ..._filteredItems.map(buildCenteredCard).toList(),
         ],
       ),
     );
