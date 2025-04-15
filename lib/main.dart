@@ -83,6 +83,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   Widget buildCenteredCard(_AppItem item) {
     return Card(
+      color: const Color(0XFFF5722), // Updated card color
       child: InkWell(
         onTap: item.onTap,
         child: SizedBox(
@@ -111,7 +112,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         backgroundColor: const Color(0xFF1E1E1E), // VS Code AppBar color
         title: const Text(
           'All in One',
-          style: TextStyle(color: Colors.lightGreen),
+          style: TextStyle(color: Colors.redAccent),
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -128,7 +129,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
               hintStyle: const TextStyle(color: Colors.grey),
               prefixIcon: const Icon(Icons.search, color: Colors.white),
               filled: true,
-              fillColor: const Color(0xFF330066), // Updated to the requested purple color
+              fillColor: const Color(0xFF330066), // Purple search bar
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide.none,
