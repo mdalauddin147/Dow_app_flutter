@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Riverpod provider to track number of taps
 final tapCountProvider = StateProvider<int>((ref) => 0);
 
 void main() {
@@ -17,7 +16,12 @@ class MyAppList extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF7093FF), // VS Code bg
+        cardColor: const Color(0xFFFFFFFF),
+        iconTheme: const IconThemeData(color: Colors.white),
+        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -31,37 +35,71 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
-  Future<void> launchExternalUrl(Uri url) async {
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+  final TextEditingController _searchController = TextEditingController();
+
+  List<_AppItem> _items = [];
+  List<_AppItem> _filteredItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _items = [
+      _AppItem(FontAwesomeIcons.map, 'Map', () {
+        _launchURL('https://www.google.com/maps/search/?api=1&query=New+York');
+      }),
+      _AppItem(FontAwesomeIcons.images, 'Album', () {
+        _launchURL('https://photos.google.com');
+      }),
+      _AppItem(FontAwesomeIcons.phone, 'Phone', () {
+        _launchURL('tel:+1234567890');
+      }),
+      _AppItem(FontAwesomeIcons.instagram, 'Instagram', () {
+        _launchURL('https://www.instagram.com');
+      }),
+      _AppItem(FontAwesomeIcons.facebook, 'Facebook', () {
+        _launchURL('https://www.facebook.com');
+      }),
+    ];
+
+    _filteredItems = _items;
+
+    _searchController.addListener(() {
+      final query = _searchController.text.toLowerCase();
+      setState(() {
+        _filteredItems = _items
+            .where((item) => item.label.toLowerCase().contains(query))
+            .toList();
+      });
+    });
+  }
+
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
   }
 
-  void _openGoogleMaps() {
-    final Uri mapUrl = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=New+York',
+  Widget buildCenteredCard(_AppItem item) {
+    return Card(
+      child: InkWell(
+        onTap: item.onTap,
+        child: SizedBox(
+          height: 100,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FaIcon(item.icon, color: Colors.white),
+                const SizedBox(height: 8),
+                Text(item.label, style: const TextStyle(color: Colors.white)),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
-    launchExternalUrl(mapUrl);
-  }
-
-  void _openAlbum() {
-    final Uri albumUrl = Uri.parse('https://photos.google.com');
-    launchExternalUrl(albumUrl);
-  }
-
-  void _openPhoneDialer() {
-    final Uri phoneUrl = Uri.parse('tel:+1234567890');
-    launchExternalUrl(phoneUrl);
-  }
-
-  void _openInstagram() {
-    final Uri instagramUrl = Uri.parse('https://www.instagram.com');
-    launchExternalUrl(instagramUrl);
-  }
-
-  void _openFacebook() {
-    final Uri facebookUrl = Uri.parse('https://www.facebook.com');
-    launchExternalUrl(facebookUrl);
   }
 
   @override
@@ -70,62 +108,52 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('My App'),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                ref.read(tapCountProvider.notifier).state++;
-              },
-            ),
-          ],
+        backgroundColor: const Color(0xFF1E1E1E), // VS Code AppBar color
+        title: const Text(
+          'My App',
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: ListView(
         padding: const EdgeInsets.all(8.0),
         children: <Widget>[
-          Center(child: Text('You tapped: $tapCount times')),
           const SizedBox(height: 10),
-          Card(
-            child: ListTile(
-              leading: const FaIcon(FontAwesomeIcons.map),
-              title: const Center(child: Text('Map')),
-              onTap: _openGoogleMaps,
+          TextField(
+            controller: _searchController,
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Search...',
+              hintStyle: const TextStyle(color: Colors.grey),
+              prefixIcon: const Icon(Icons.search, color: Colors.white),
+              filled: true,
+              fillColor: const Color(0xFF2D2D2D),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
-          Card(
-            child: ListTile(
-              leading: const FaIcon(FontAwesomeIcons.images),
-              title: const Center(child: Text('Album')),
-              onTap: _openAlbum,
+          const SizedBox(height: 20),
+          Center(
+            child: Text(
+              'You tapped: $tapCount times',
+              style: const TextStyle(color: Colors.white),
             ),
           ),
-          Card(
-            child: ListTile(
-              leading: const FaIcon(FontAwesomeIcons.phone),
-              title: const Center(child: Text('Phone')),
-              onTap: _openPhoneDialer,
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: const FaIcon(FontAwesomeIcons.instagram),
-              title: const Center(child: Text('Instagram')),
-              onTap: _openInstagram,
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: const FaIcon(FontAwesomeIcons.facebook),
-              title: const Center(child: Text('Facebook')),
-              onTap: _openFacebook,
-            ),
-          ),
+          const SizedBox(height: 10),
+          ..._filteredItems.map(buildCenteredCard).toList(),
         ],
       ),
     );
   }
+}
+
+class _AppItem {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  _AppItem(this.icon, this.label, this.onTap);
 }
