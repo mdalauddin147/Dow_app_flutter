@@ -45,11 +45,20 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     super.initState();
 
     _items = [
-      _AppItem(FontAwesomeIcons.map, 'Map', () {
-        _launchURL('https://www.google.com/maps/search/?api=1&query=New+York');
+      _AppItem(FontAwesomeIcons.tiktok, 'Tiktok', () {
+        _launchURL('https://www.tiktok.com/');
+      }),
+
+      _AppItem(FontAwesomeIcons.snapchat, 'Snapchat', () {
+        _launchURL('https://www.snapchat.com/');
       }),
       _AppItem(FontAwesomeIcons.images, 'Album', () {
         _launchURL('https://photos.google.com');
+
+      }),
+
+      _AppItem(FontAwesomeIcons.message, 'Chatgpt', () {
+        _launchURL('https://chatgpt.com/');
       }),
       _AppItem(FontAwesomeIcons.phone, 'Phone', () {
         _launchURL('tel:+1234567890');
@@ -60,7 +69,17 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       _AppItem(FontAwesomeIcons.facebook, 'Facebook', () {
         _launchURL('https://www.facebook.com');
       }),
+      _AppItem(FontAwesomeIcons.motorcycle , 'Pathao ', () {
+        _launchURL('https://pathao.com/np/');  // URL for motobike
+      }),
+      _AppItem(FontAwesomeIcons.map, 'Map', () {
+        _launchURL('https://www.google.com/maps/search/?api=1&query=New+York');
+      }),
+      _AppItem(FontAwesomeIcons.google, 'Google', () {
+        _launchURL('https://www.google.com/');
+      }),
     ];
+
 
     _filteredItems = _items;
 
