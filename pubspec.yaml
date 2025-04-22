@@ -8,12 +8,12 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  url_launcher: ^6.3.1
-  font_awesome_flutter: ^10.7.0
-  flutter_riverpod: ^2.6.1
+    flutter:
+      sdk: flutter
+    provider: ^6.1.2  # or the latest version
+    font_awesome_flutter: ^10.7.0
+    url_launcher: ^6.2.5
+
 
 dev_dependencies:
   flutter_test:
